@@ -38,6 +38,40 @@ Our [documentation page](https://isaac-sim.github.io/IsaacLab) provides everythi
 - [Available environments](https://isaac-sim.github.io/IsaacLab/main/source/overview/environments.html)
 
 
+## Environment Setup
+
+To reproduce the in-hand manipulation examples you’ll need the following software stack.  
+All steps have been verified on **Ubuntu 20.04** with **CUDA 11.8**.
+
+1. **Install Isaac Sim 4.5**  
+   Download and install Isaac Sim 4.5 from NVIDIA Omniverse Launcher (or directly from the archive if you work offline).
+
+2. **Install Isaac Lab v2.0.1**  
+   Clone the repository and check out the v2.0.1 tag:  
+
+       git clone https://github.com/NVIDIA-Omniverse/IsaacLab.git ~/workspace/IsaacLab
+       cd ~/workspace/IsaacLab && git checkout v2.0.1
+
+3. **Create a symbolic link for Isaac Sim**  
+   Isaac Lab expects the simulator under `_isaac_sim`.  
+   If you installed Isaac Sim in `~/.local/share/ov/pkg/isaac-sim-4.5.0`, create the link:
+
+       ln -s ~/.local/share/ov/pkg/isaac-sim-4.5.0 ~/workspace/IsaacLab/_isaac_sim
+
+4. **Update your `~/.bashrc`**  
+   Append the lines below and run `source ~/.bashrc` (or open a new terminal):
+
+       # Isaac Sim paths
+       export PATH="$HOME/.local/share/ov/pkg/isaac-sim-4.5.0:$PATH"
+       export ISAACSIM_PATH="$HOME/.local/share/ov/pkg/isaac-sim-4.5.0"
+       export ISAACSIM_PYTHON_EXE="$ISAACSIM_PATH/python.sh"
+
+       # Isaac Lab paths
+       export ISAACLAB_PATH="$HOME/workspace/IsaacLab"
+       export PATH="$ISAACLAB_PATH:$PATH"
+
+Once the environment variables are set, you can run any of the command snippets in the **In-Hand Manipulation Samples** section without extra arguments.
+
 ## In-Hand Manipulation Samples
 
 We have extended the existing Allegro in-hand manipulation example by adding support for the Leap Hand model. Below are the commands to run each:
