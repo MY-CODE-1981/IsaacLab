@@ -2,6 +2,7 @@
 
 ---
 
+
 # Isaac Lab
 
 [![IsaacSim](https://img.shields.io/badge/IsaacSim-4.5.0-silver.svg)](https://docs.isaacsim.omniverse.nvidia.com/latest/index.html)
@@ -37,6 +38,38 @@ Our [documentation page](https://isaac-sim.github.io/IsaacLab) provides everythi
 - [Available environments](https://isaac-sim.github.io/IsaacLab/main/source/overview/environments.html)
 
 
+## In-Hand Manipulation Samples
+
+We have extended the existing Allegro in-hand manipulation example by adding support for the Leap Hand model. Below are the commands to run each:
+
+### Allegro In-Hand Manipulation
+
+- **4096 environments, headless**  
+  ```bash  
+  ./isaaclab.sh -p scripts/reinforcement_learning/rsl_rl/train.py \
+    --task Isaac-Repose-Cube-Allegro-v0 \
+    --num_envs 4096 --headless
+
+- **1 environment (with GUI)**  
+  ```bash  
+  ./isaaclab.sh -p scripts/reinforcement_learning/rsl_rl/train.py \
+    --task Isaac-Repose-Cube-Allegro-v0 \
+    --num_envs 1
+
+### Leap Hand In-Hand Manipulation
+
+- **4096 environments, headless**  
+  ```bash  
+  ./isaaclab.sh -p scripts/reinforcement_learning/rsl_rl/train.py \
+    --task Isaac-Repose-Cube-Leap-Hand-v0 \
+    --num_envs 4096 --headless
+
+- **1 environment (with GUI)**  
+  ```bash  
+  ./isaaclab.sh -p scripts/reinforcement_learning/rsl_rl/train.py \
+    --task Isaac-Repose-Cube-Leap-Hand-v0 \
+    --num_envs 1
+    
 ## Contributing to Isaac Lab
 
 We wholeheartedly welcome contributions from the community to make this framework mature and useful for everyone.
