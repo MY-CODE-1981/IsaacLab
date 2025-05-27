@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  isaaclab:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    runtime: nvidia
+    environment:
+      - DISPLAY=${DISPLAY}
+      - QT_X11_NO_MITSHM=1
+      - NVIDIA_DRIVER_CAPABILITIES=all
+      - ISAACSIM_PATH=/workspace/isaac-sim
+      - ISAACSIM_PYTHON_EXE=/workspace/isaac-sim/python.sh
+      - ISAACLAB_PATH=/workspace/IsaacLab
+      - PATH=/workspace/isaac-sim:/workspace/IsaacLab/bin:$PATH
+      - PYTHONPATH=/workspace/IsaacLab/source:/workspace/IsaacLab
+    volumes:
+      # ホストの IsaacSim 4.5 をマウント（readonly）
+      - $HOME/.local/share/ov/pkg/isaac-sim-4.5.0:/workspace/isaac-sim:rw
+      # あなたのリポジトリ全体
+      - ../:/workspace/IsaacLab:rw
+      # X11 GUI 用ソケット／認証
+      - /tmp/.X11-unix:/tmp/.X11-unix
+      - $HOME/.Xauthority:/root/.Xauthority:ro
+    working_dir: /workspace/IsaacLab
+
+    # ===== ここでインストールを実行 =====
+    entrypoint:
+      - bash
+      - -lc
+      - |
+        set -e
+        cd /workspace/IsaacLab
+        chmod +x /workspace/isaac-sim/python.sh || true
+        echo "=== Running isaaclab.sh --install ==="
+        ./isaaclab.sh --install
+        echo "=== Starting keep-alive ==="
+        exec tail -f /dev/null

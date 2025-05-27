@@ -1,0 +1,32 @@
+# docker/docker-compose.yml
+version: '3.8'
+
+services:
+  isaaclab:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    runtime: nvidia
+    environment:
+      # X11 forwarding
+      - DISPLAY=${DISPLAY}
+      - QT_X11_NO_MITSHM=1
+      # Require GPU
+      - NVIDIA_DRIVER_CAPABILITIES=all
+      # Paths for Isaac Sim and Lab
+      - ISAACSIM_PATH=/workspace/isaac-sim
+      - ISAACSIM_PYTHON_EXE=/workspace/isaac-sim/python.sh
+      - ISAACLAB_PATH=/workspace/IsaacLab
+      - PATH=/workspace/isaac-sim:/workspace/IsaacLab:$PATH
+      - PYTHONPATH=/workspace/IsaacLab/source:/workspace/IsaacLab
+    volumes:
+      # Mount local Isaac Sim
+      - $HOME/.local/share/ov/pkg/isaac-sim-4.5.0:/workspace/isaac-sim:ro
+      # Mount the entire repository
+      # - ./:/workspace/IsaacLab:ro
+      - ../:/workspace/IsaacLab
+      # X11 socket for GUI
+      - /tmp/.X11-unix:/tmp/.X11-unix
+      - $HOME/.Xauthority:/root/.Xauthority:ro
+    working_dir: /workspace/IsaacLab
+    command: tail -f /dev/null

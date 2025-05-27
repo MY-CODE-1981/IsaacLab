@@ -1,0 +1,31 @@
+# 1) ベースイメージ
+FROM nvidia/cuda:11.8.0-devel-ubuntu20.04
+
+# 2) システム依存パッケージ（X11関連ライブラリを追加）
+RUN sed -i 's|http://archive.ubuntu.com/ubuntu|http://jp.archive.ubuntu.com/ubuntu|g' /etc/apt/sources.list \
+ && apt-get update \
+ && DEBIAN_FRONTEND=noninteractive apt-get install -y \
+      wget git ca-certificates \
+      libgl1-mesa-glx libglib2.0-0 ncurses-term \
+      libsm6 libxrender1 libxext6 libxcb1 libglu1-mesa \
+ && rm -rf /var/lib/apt/lists/*
+
+# 3) ワークディレクトリとコードのコピー
+WORKDIR /workspace/IsaacLab
+COPY . /workspace/IsaacLab
+
+# 4) Lab が期待するシンボリックリンク
+RUN ln -sfn /workspace/isaac-sim /workspace/IsaacLab/_isaac_sim
+
+# 5) python.sh を実行可能に
+# RUN chmod +x /workspace/isaac-sim/python.sh
+
+# 6) 環境変数
+ENV ISAACSIM_PATH=/workspace/isaac-sim \
+    ISAACSIM_PYTHON_EXE=/workspace/isaac-sim/python.sh \
+    ISAACLAB_PATH=/workspace/IsaacLab \
+    PATH=/workspace/isaac-sim:/workspace/IsaacLab/bin:$PATH \
+    PYTHONPATH=/workspace/IsaacLab/source:$PYTHONPATH
+
+# 7) デフォルトシェル
+ENTRYPOINT ["bash"]

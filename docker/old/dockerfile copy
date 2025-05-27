@@ -1,0 +1,37 @@
+# docker/Dockerfile
+
+# 1) Use the official CUDA 11.8 development image on Ubuntu 20.04
+FROM nvidia/cuda:11.8.0-devel-ubuntu20.04
+
+# 2) Switch to Japanese mirror to avoid apt sync issues
+RUN sed -i 's|http://archive.ubuntu.com/ubuntu|http://jp.archive.ubuntu.com/ubuntu|g' /etc/apt/sources.list
+
+# 3) Install system packages (OpenGL support and Python3)
+RUN apt-get update && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y \
+      libgl1-mesa-glx \
+      libglib2.0-0 \
+      git \
+      wget \
+      python3-pip && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+# 4) Create workspace and copy IsaacLab source
+WORKDIR /workspace/IsaacLab
+COPY . /workspace/IsaacLab
+
+# 5) Symlink the mounted Isaac Sim into IsaacLab's expected location
+RUN ln -sfn /workspace/isaac-sim /workspace/IsaacLab/_isaac_sim
+
+# 6) Install IsaacLab into Isaac Sim’s Python environment
+RUN chmod +x /workspace/isaac-sim/python.sh && \
+    /workspace/isaac-sim/python.sh -m pip install --upgrade pip && \
+    /workspace/isaac-sim/python.sh -m pip install -e /workspace/IsaacLab/source
+
+# 7) Set environment variables for Isaac Sim and Isaac Lab
+ENV ISAACSIM_PATH=/workspace/isaac-sim \
+    ISAACSIM_PYTHON_EXE=/workspace/isaac-sim/python.sh \
+    ISAACLAB_PATH=/workspace/IsaacLab \
+    PYTHONPATH="/workspace/IsaacLab/source:${PYTHONPATH}" \
+    PATH="/workspace/isaac-sim:/workspace/IsaacLab:${PATH}"
