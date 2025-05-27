@@ -103,7 +103,31 @@ We have extended the existing Allegro in-hand manipulation example by adding sup
   ./isaaclab.sh -p scripts/reinforcement_learning/rsl_rl/train.py \
     --task Isaac-Repose-Cube-Leap-Hand-v0 \
     --num_envs 1
-    
+
+### Docker Startup Procedure
+
+1. Run these commands at the project root:
+   ```bash
+   cd <IsaacLab-root>/docker
+   docker compose down
+   docker compose build --no-cache && docker compose up -d
+   docker compose run isaaclab
+   ```
+     
+2. Open another terminal and allow X11 forwarding
+   ```bash
+   xhost +si:localuser:root
+   docker ps -a
+   docker exec -it -e DISPLAY=$DISPLAY --user root <container-id> bash
+   ```
+   
+3. Inside the container, launch Isaac Lab
+   ```bash
+    ./isaaclab.sh -p scripts/reinforcement_learning/rsl_rl/train.py \
+      --task Isaac-Repose-Cube-Leap-Hand-v0 \
+      --num_envs 1
+    ```
+
 ## Contributing to Isaac Lab
 
 We wholeheartedly welcome contributions from the community to make this framework mature and useful for everyone.
